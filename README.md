@@ -3,4 +3,4 @@
 <!-- omit in toc -->
 ## Compresor y realzador 9kHz
 
-<img src="kbrAirBoost_snap.png" width="70%">
+<img src="kbrAirBoost_snap.PNG" width="70%">
