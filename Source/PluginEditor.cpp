@@ -152,7 +152,7 @@ void CtagdrcAudioProcessorEditor::initWidgets()
     airLSlider.setLabelText("Param B");
 
     addAndMakeVisible(appTitle);
-    appTitle.setText("Kbr Template", dontSendNotification);
+    appTitle.setText("Kbr RingDist", dontSendNotification);
 
     addAndMakeVisible(meter);
     meter.setMode(Meter::Mode::OUT);
