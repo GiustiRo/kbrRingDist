@@ -37,62 +37,23 @@ public:
 
     // Prepares compressor with a ProcessSpec-Object containing samplerate, blocksize and number of channels
     void prepare(const dsp::ProcessSpec& ps);
-
-    // Sets compressor to bypassed/not bypassed
-    void setPower(bool);
-
-    // Sets input in dB
-    void setInput(float);
-
-    // Sets threshold in dB
-    void setThreshold(float);
-
-    // Sets ratio in dB
-    void setRatio(float);
-
-    // Sets knee-width in dB (> 0 = soft knee)
-    void setKnee(float);
-
-    // Sets make-up gain in dB
-    void setMakeup(float);
-
+    
     // Sets mix 0.0f - 1.0f
-    void setMix(float);
+    void setMix(float); // Param A.
 
-    // Sets attack time in milliseconds
-    void setAttack(float);
-
-    // Sets release time in milliseconds
-    void setRelease(float);
-
-    // Sets auto attack to enabled = true or disabled = false
-    void setAutoAttack(bool);
-
-    // Sets auto release to enabled = true or disabled = false
-    void setAutoRelease(bool);
-
-    // Sets auto makeup to enabled = true or disabled = false
-    void setAutoMakeup(bool);
-
-    // Enables lookahead
-    void setLookahead(bool);
-
-    // Gets current make-up gain value
-    float getMakeup();
+    void setAir(float); // Param B.
 
     // Return current sampleRate
     double getSampleRate();
 
     float getMaxGainReduction();
 
-    void setAir(float);
-
     // Processes input buffer
     void process(AudioBuffer<float>& buffer);
 
 private:
     inline void applyInputGain(AudioBuffer<float>&, int);
-    inline float calculateAutoMakeup(const float*, int numSamples);
+
     void setupBands()
     {
         *processChain.get<ChainIndex::Band4>().state =
@@ -118,11 +79,8 @@ private:
     double lookaheadDelay{0.005};
     float input{0.0f};
     float prevInput{0.0f};
-    float makeup{0.0f};
-    float autoMakeup{0.0f};
-    bool bypassed{false};
+
     bool lookaheadEnabled{false};
-    bool autoMakeupEnabled{false};
     float mix{1.0f};
     float maxGainReduction{0.0f};
     float band4Freq{ 9500.0f }, band4Gain{ 0.0f }, band4Q{0.4f};

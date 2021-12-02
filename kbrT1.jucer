@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="S1McCB" name="kbrAirBoost" projectType="audioplug" reportAppUsage="0"
+<JUCERPROJECT id="S1McCB" name="kbrT1" projectType="audioplug" reportAppUsage="0"
               displaySplashScreen="1" pluginFormats="buildAU,buildVST3" cppLanguageStandard="latest"
               jucerFormatVersion="1">
-  <MAINGROUP id="S0Xk3o" name="kbrAirBoost">
+  <MAINGROUP id="S0Xk3o" name="kbrT1">
     <GROUP id="{AA0EA663-2891-7D9D-EE4B-0F9DB6C9069F}" name="Drawables">
       <FILE id="ooVoTk" name="airBoost_bg_scratch.jpg" compile="0" resource="1"
             file="Drawables/airBoost_bg_scratch.jpg"/>

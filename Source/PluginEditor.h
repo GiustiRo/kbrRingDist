@@ -49,31 +49,9 @@ private:
     MeterBackground meterbg;
     Meter meter;
 
-    LabeledSlider inGainLSlider;
-    LabeledSlider makeupGainLSlider;
-    LabeledSlider treshLSlider;
-    LabeledSlider ratioLSlider;
-    LabeledSlider kneeLSlider;
-    LabeledSlider attackLSlider;
-    LabeledSlider releaseLSlider;
-    LabeledSlider mixLSlider; // Boost
-    LabeledSlider airLSlider; // Eq
+    LabeledSlider mixLSlider; // Param A.
+    LabeledSlider airLSlider; // Param B.
     Label appTitle;
-
-
-
-
-    // TextButton lahButton;
-    //TextButton autoAttackButton;
-    //TextButton autoReleaseButton;
-    //TextButton autoMakeupButton;
-    //DrawableButton powerButton;
-
-    /*std::unique_ptr<AudioProcessorValueTreeState::ButtonAttachment> lahAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::ButtonAttachment> autoAttackAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::ButtonAttachment> autoReleaseAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::ButtonAttachment> autoMakeupAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::ButtonAttachment> powerAttachment;*/
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CtagdrcAudioProcessorEditor)
 };

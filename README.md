@@ -1,6 +1,6 @@
 <!-- omit in toc -->
-# kbr Dist
+# kbr T1 (Template v.1)
 <!-- omit in toc -->
-## Distorsión y Modulación en Anillo
+## Template for kbr plugins
 
-wip
+It can be improved.

@@ -14,12 +14,9 @@
 //==============================================================================
 CtagdrcAudioProcessorEditor::CtagdrcAudioProcessorEditor(CtagdrcAudioProcessor& p, AudioProcessorValueTreeState& vts)
     : AudioProcessorEditor(&p), processor(p), valueTreeState(vts), backgroundApp(Colour(Constants::Colors::bg_App)),
-    inGainLSlider(this),
-    makeupGainLSlider(this), treshLSlider(this), ratioLSlider(this), kneeLSlider(this), attackLSlider(this),
-    releaseLSlider(this), mixLSlider(this), airLSlider(this)
-      //powerButton("powerButton", DrawableButton::ButtonStyle::ImageOnButtonBackground)
-
+      mixLSlider(this), airLSlider(this)
 {
+
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setLookAndFeel(&scLaF);
@@ -40,8 +37,7 @@ void CtagdrcAudioProcessorEditor::paint(Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll(backgroundApp);
-    g.drawImage(bg_image, getLocalBounds().toFloat());
-    //bg_image = Drawable::createFromImageData(BinaryData::power_white_svg, BinaryData::power_white_svgSize).get();
+    //g.drawImage(bg_image, getLocalBounds().toFloat()); // Uncomment to apply bg img loaded above.
 }
 
 void CtagdrcAudioProcessorEditor::resized()
@@ -58,7 +54,6 @@ void CtagdrcAudioProcessorEditor::resized()
     auto rBtnArea = area.removeFromRight(btnAreaWidth).reduced(Constants::Margins::medium);
     auto botBtnArea = area.removeFromBottom(btnBotHeight).reduced(Constants::Margins::medium);
     auto footer = area.removeFromTop(headerHeight).reduced(Constants::Margins::small);
-
 
     const FlexItem::Margin knobMargin = FlexItem::Margin(Constants::Margins::medium);
     const FlexItem::Margin knobMarginSmall = FlexItem::Margin(Constants::Margins::medium);
@@ -95,13 +90,13 @@ void CtagdrcAudioProcessorEditor::resized()
     rightBtnBox.items.add(FlexItem().withFlex(1).withMargin(knobMarginSmall));
     rightBtnBox.performLayout(rBtnArea.toFloat());
 
-    /*FlexBox botBtnBox;
+    FlexBox botBtnBox;
     botBtnBox.flexWrap = FlexBox::Wrap::noWrap;
     botBtnBox.flexDirection = FlexBox::Direction::row;
     botBtnBox.justifyContent = FlexBox::JustifyContent::spaceAround;
-    botBtnBox.items.add(FlexItem(treshLSlider).withFlex(1).withMargin(knobMargin));
-    botBtnBox.items.add(FlexItem(makeupGainLSlider).withFlex(1).withMargin(knobMargin));
-    botBtnBox.performLayout(botBtnArea.toFloat());*/
+    botBtnBox.items.add(FlexItem().withFlex(1).withMargin(knobMargin));
+    botBtnBox.items.add(FlexItem().withFlex(1).withMargin(knobMargin));
+    botBtnBox.performLayout(botBtnArea.toFloat());
 
     FlexBox footerBox;
     footerBox.flexWrap = FlexBox::Wrap::noWrap;
@@ -147,120 +142,29 @@ void CtagdrcAudioProcessorEditor::timerCallback()
 
 void CtagdrcAudioProcessorEditor::initWidgets()
 {
-    /*addAndMakeVisible(inGainLSlider);
-    inGainLSlider.reset(valueTreeState, "inputgain");
-    inGainLSlider.setLabelText("Input");*/
-
-    /*addAndMakeVisible(makeupGainLSlider);
-    makeupGainLSlider.reset(valueTreeState, "makeup");
-    makeupGainLSlider.setLabelText("Makeup");
-
-    addAndMakeVisible(treshLSlider);
-    treshLSlider.reset(valueTreeState, "threshold");
-    treshLSlider.setLabelText("Threshold");
-
-    addAndMakeVisible(ratioLSlider);
-    ratioLSlider.reset(valueTreeState, "ratio");
-    ratioLSlider.setLabelText("Ratio");*/
-
-    /*addAndMakeVisible(kneeLSlider);
-    kneeLSlider.reset(valueTreeState, "knee");
-    kneeLSlider.setLabelText("Knee");*/
-
-    /*addAndMakeVisible(attackLSlider);
-    attackLSlider.reset(valueTreeState, "attack");
-    attackLSlider.setLabelText("Attack");*/
-
-    /*addAndMakeVisible(releaseLSlider);
-    releaseLSlider.reset(valueTreeState, "release");
-    releaseLSlider.setLabelText("Release");*/
-
+    
     addAndMakeVisible(mixLSlider);
-    mixLSlider.reset(valueTreeState, "mix");
-    mixLSlider.setLabelText("Boost");
+    mixLSlider.reset(valueTreeState, "mix"); // Param A.
+    mixLSlider.setLabelText("Param A");
 
     addAndMakeVisible(airLSlider);
-    airLSlider.reset(valueTreeState, "air");
-    airLSlider.setLabelText("Air");
+    airLSlider.reset(valueTreeState, "air"); // Param B.
+    airLSlider.setLabelText("Param B");
 
     addAndMakeVisible(appTitle);
-    appTitle.setText("Kbr AirBoost", dontSendNotification);
-
-    
-    ////addAndMakeVisible(lahButton);
-    //lahButton.setColour(TextButton::ColourIds::buttonColourId, Colour::fromRGB(245, 124, 0));
-    //lahButton.setButtonText("LookAhead");
-    //lahButton.setClickingTogglesState(true);
-    //lahButton.setToggleState(false, dontSendNotification);
-    //lahAttachment.reset(new AudioProcessorValueTreeState::ButtonAttachment(valueTreeState, "lookahead", lahButton));
-
-    //addAndMakeVisible(autoAttackButton);
-    /*autoAttackButton.setColour(TextButton::ColourIds::buttonColourId, Colour::fromRGB(245, 124, 0));
-    autoAttackButton.setButtonText("AutoAttack");
-    autoAttackButton.setClickingTogglesState(true);
-    autoAttackButton.setToggleState(false, dontSendNotification);
-    autoAttackButton.addListener(this);
-    autoAttackAttachment.reset(
-        new AudioProcessorValueTreeState::ButtonAttachment(valueTreeState, "autoattack", autoAttackButton));*/
-
-    //addAndMakeVisible(autoReleaseButton);
-    /*autoReleaseButton.setColour(TextButton::ColourIds::buttonColourId, Colour::fromRGB(245, 124, 0));
-    autoReleaseButton.setButtonText("AutoRelease");
-    autoReleaseButton.setClickingTogglesState(true);
-    autoReleaseButton.setToggleState(false, dontSendNotification);
-    autoReleaseButton.addListener(this);
-    autoReleaseAttachment.reset(
-        new AudioProcessorValueTreeState::ButtonAttachment(valueTreeState, "autorelease", autoReleaseButton));
-
-    addAndMakeVisible(autoMakeupButton);
-    autoMakeupButton.setColour(TextButton::ColourIds::buttonColourId, Colour::fromRGB(245, 124, 0));
-    autoMakeupButton.setButtonText("Makeup");
-    autoMakeupButton.setClickingTogglesState(true);
-    autoMakeupButton.setToggleState(false, dontSendNotification);
-    autoMakeupButton.addListener(this);
-    autoMakeupAttachment.reset(
-        new AudioProcessorValueTreeState::ButtonAttachment(valueTreeState, "automakeup", autoMakeupButton));*/
-
-    /*addAndMakeVisible(powerButton);
-    powerButton.setColour(TextButton::ColourIds::buttonColourId, Colour::fromRGB(245, 124, 0));
-    powerButton.setImages(
-        Drawable::createFromImageData(BinaryData::power_white_svg, BinaryData::power_white_svgSize).get());
-    powerButton.setClickingTogglesState(true);
-    powerButton.setToggleState(true, dontSendNotification);
-    powerButton.addListener(this);
-    powerAttachment.reset(new AudioProcessorValueTreeState::ButtonAttachment(valueTreeState, "power", powerButton));*/
+    appTitle.setText("Kbr Template", dontSendNotification);
 
     addAndMakeVisible(meter);
     meter.setMode(Meter::Mode::OUT);
-
     
 }
 
 void CtagdrcAudioProcessorEditor::setGUIState(bool powerState)
 {
-    inGainLSlider.setEnabled(powerState);
-    treshLSlider.setEnabled(powerState);
-    ratioLSlider.setEnabled(powerState);
-    kneeLSlider.setEnabled(powerState);
-    makeupGainLSlider.setEnabled(powerState);
+
     mixLSlider.setEnabled(powerState);
     airLSlider.setEnabled(powerState);
     meter.setEnabled(powerState);
     meter.setGUIEnabled(powerState);
-    /*lahButton.setEnabled(powerState);
-    autoMakeupButton.setEnabled(powerState);
 
-    autoAttackButton.setEnabled(powerState);
-    autoReleaseButton.setEnabled(powerState);*/
-
-    if (!powerState)
-    {
-        attackLSlider.setEnabled(powerState);
-        releaseLSlider.setEnabled(powerState);
-    }
-    else
-    {
-        /*attackLSlider.setEnabled(!autoAttackButton.getToggleState());
-        releaseLSlider.setEnabled(!autoReleaseButton.getToggleState());*/
-    }
 }

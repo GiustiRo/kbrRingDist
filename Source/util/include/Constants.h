@@ -52,30 +52,6 @@ namespace Constants
         constexpr float inputEnd = 30.0f;
         constexpr float inputInterval = 0.1f;
 
-        constexpr float thresholdStart = -60.0f;
-        constexpr float thresholdEnd = 0.0f;
-        constexpr float thresholdInterval = 0.1f;
-
-        constexpr float ratioStart = 0.05f;
-        constexpr float ratioEnd = 24.0f;
-        constexpr float ratioInterval = 0.05f;
-
-        constexpr float kneeStart = 0.0f;
-        constexpr float kneeEnd = 24.0f;
-        constexpr float kneeInterval = 0.1f;
-
-        constexpr float attackStart = 0.0f;
-        constexpr float attackEnd = 100.0f;
-        constexpr float attackInterval = 0.01f;
-
-        constexpr float releaseStart = 5.0f;
-        constexpr float releaseEnd = 1500.0f;
-        constexpr float releaseInterval = 0.01f;
-
-        constexpr float makeupStart = -40.0f;
-        constexpr float makeupEnd = 40.0f;
-        constexpr float makeupInterval = 0.1f;
-
         constexpr float mixStart = 0.001f;
         constexpr float mixEnd = 1.0f;
         constexpr float mixInterval = 0.001f;

@@ -42,74 +42,16 @@ void Compressor::prepare(const dsp::ProcessSpec& ps)
 
 }
 
-void Compressor::setPower(bool newPower)
-{
-    bypassed = newPower;
-}
 
-void Compressor::setInput(float newInput)
-{
-    input = newInput;
-}
 
-void Compressor::setAttack(float attackTimeInMs)
-{
-    ballistics.setAttack(attackTimeInMs * 0.001);
-}
-
-void Compressor::setRelease(float releaseTimeInMs)
-{
-    ballistics.setRelease(releaseTimeInMs * 0.001);
-}
-
-void Compressor::setRatio(float rat)
-{
-    gainComputer.setRatio(rat);
-}
-
-void Compressor::setKnee(float kneeInDb)
-{
-    gainComputer.setKnee(kneeInDb);
-}
-
-void Compressor::setThreshold(float thresholdInDb)
-{
-    gainComputer.setThreshold(thresholdInDb);
-}
-
-void Compressor::setMakeup(float makeupGainInDb)
-{
-    makeup = makeupGainInDb;
-}
-
-void Compressor::setMix(float newMix)
+void Compressor::setMix(float newMix) // Param A.
 {
     mix = newMix;
 }
 
-void Compressor::setAutoAttack(bool isEnabled)
+void Compressor::setAir(float band4G) // Param B.
 {
-    ballistics.setAutoAttack(isEnabled);
-}
-
-void Compressor::setAutoRelease(bool isEnabled)
-{
-    ballistics.setAutoRelease(isEnabled);
-}
-
-void Compressor::setAutoMakeup(bool isEnabled)
-{
-    autoMakeupEnabled = isEnabled;
-}
-
-void Compressor::setLookahead(bool newLookahead)
-{
-    lookaheadEnabled = newLookahead;
-}
-
-float Compressor::getMakeup()
-{
-    return makeup;
+    band4Gain = band4G;
 }
 
 double Compressor::getSampleRate()
@@ -122,14 +64,9 @@ float Compressor::getMaxGainReduction()
     return maxGainReduction;
 }
 
-void Compressor::setAir(float band4G)
-{
-    band4Gain = band4G;
-}
-
 void Compressor::process(AudioBuffer<float>& buffer)
 {
-    if (!bypassed)
+    if (!false)
     {
         const auto numSamples = buffer.getNumSamples();
         const auto numChannels = buffer.getNumChannels();
@@ -139,7 +76,7 @@ void Compressor::process(AudioBuffer<float>& buffer)
         // Clear any old samples
         originalSignal.clear();
         FloatVectorOperations::fill(rawSidechainSignal, 0.0f, numSamples);
-        maxGainReduction = 0.0f;
+        //maxGainReduction = 0.0f;
 
         // Apply input gain
         applyInputGain(buffer, numSamples);
@@ -161,7 +98,7 @@ void Compressor::process(AudioBuffer<float>& buffer)
         maxGainReduction = FloatVectorOperations::findMinimum(rawSidechainSignal, numSamples);
 
         // Calculate auto makeup
-        autoMakeup = calculateAutoMakeup(rawSidechainSignal, numSamples);
+        //autoMakeup = calculateAutoMakeup(rawSidechainSignal, numSamples);
 
         // Do lookahead if enabled
         if (lookaheadEnabled)
@@ -175,7 +112,7 @@ void Compressor::process(AudioBuffer<float>& buffer)
 
         // Add makeup gain and convert side-chain to linear domain
         for (int i = 0; i < numSamples; ++i)
-            sidechainSignal[i] = Decibels::decibelsToGain(sidechainSignal[i] + makeup + autoMakeup);
+            sidechainSignal[i] = Decibels::decibelsToGain(sidechainSignal[i] /*+ makeup + autoMakeup*/);
 
         // Copy buffer to original signal
         for (int i = 0; i < numChannels; ++i)
@@ -193,13 +130,11 @@ void Compressor::process(AudioBuffer<float>& buffer)
             FloatVectorOperations::addWithMultiply(channelData, originalSignal.getReadPointer(i), 1 - mix, numSamples);
         }
 
-
         // Eq
         setupBands();
         dsp::AudioBlock<float> block(buffer);
         dsp::ProcessContextReplacing<float> context(block);
         processChain.process(context);
-
 
     }
 }
@@ -215,9 +150,3 @@ inline void Compressor::applyInputGain(AudioBuffer<float>& buffer, int numSample
     }
 }
 
-inline float Compressor::calculateAutoMakeup(const float* src, int numSamples)
-{
-    const float sum = SIMDMath::sum(src, numSamples);
-    smoothedAutoMakeup.process(-sum / static_cast<float>(numSamples));
-    return autoMakeupEnabled ? static_cast<float>(smoothedAutoMakeup.getState()) : 0.0f;
-}
