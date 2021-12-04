@@ -30,6 +30,10 @@ CtagdrcAudioProcessor::CtagdrcAudioProcessor()
     parameters.addParameterListener("inputgain", this);
     parameters.addParameterListener("mix", this);
     parameters.addParameterListener("air", this);
+    parameters.addParameterListener("drive", this);
+    //parameters.addParameterListener("trim", this);
+    parameters.addParameterListener("model", this);
+
 
     gainReduction.set(0.0f);
     currentInput.set(-std::numeric_limits<float>::infinity());
@@ -229,15 +233,27 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 void CtagdrcAudioProcessor::parameterChanged(const String& parameterID, float newValue)
 {
+    if (parameterID == "mix") {
+        compressor.setMix(newValue);
+        compressor.setDrive(newValue * 10);
+    }
     // Apply modifications...
     // 
-    //else if (parameterID == "mix") {
-    //    compressor.setMix(newValue);
-    //}
+    /*else if (parameterID == "mix") {
+        compressor.setMix(newValue);
+    }*/
     //else if (parameterID == "air") {
     //    compressor.setAir(newValue);
     //}
 }
+
+//float CtagdrcAudioProcessor::softClip(const float& input, const float& drive) {
+//
+//    //1.5f to account for drop in gain from the saturation initial state
+//    //pow(10, (-1 * drive) * 0.04f) to account for the increase in gain when the drive goes up
+//
+//    return piDivisor * atan(pow(10, (drive * 4) * 0.05f) * input) * 1.5f * pow(10, (-1 * drive) * 0.04f);
+//}
 
 AudioProcessorValueTreeState::ParameterLayout CtagdrcAudioProcessor::createParameterLayout()
 {
@@ -266,7 +282,7 @@ AudioProcessorValueTreeState::ParameterLayout CtagdrcAudioProcessor::createParam
                                                            0.0f, "%", AudioProcessorParameter::genericParameter,
                                                            [](float value, float)
                                                            {
-                                                               return String(value * 100.0f, 1) + " %";
+                                                               return String(round(value * 100), 0) + " %";
                                                            })); // Param A.
 
     params.push_back(std::make_unique<AudioParameterFloat>("air", "Air",
@@ -279,6 +295,17 @@ AudioProcessorValueTreeState::ParameterLayout CtagdrcAudioProcessor::createParam
                                                             {
                                                                 return String(value, 1) + " dB";
                                                             })); // Param B.
+
+    params.push_back(std::make_unique<AudioParameterFloat>("drive", "Drive",
+                                                            NormalisableRange<float>(
+                                                                Constants::Parameter::driveStart,
+                                                                Constants::Parameter::driveEnd,
+                                                                Constants::Parameter::driveInterval),
+                                                            0.0f, "%", AudioProcessorParameter::genericParameter,
+                                                            [](float value, float)
+                                                            {
+                                                                return String(value, 1) + " dB";
+                                                            }));
 
     return {params.begin(), params.end()};
 }

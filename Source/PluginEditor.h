@@ -51,6 +51,8 @@ private:
 
     LabeledSlider mixLSlider; // Param A.
     LabeledSlider airLSlider; // Param B.
+    LabeledSlider driveLSlider; // S.
+
     Label appTitle;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CtagdrcAudioProcessorEditor)

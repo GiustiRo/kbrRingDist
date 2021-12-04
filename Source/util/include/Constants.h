@@ -23,7 +23,7 @@ namespace Constants
     namespace Colors
     {
         //Backgrounds
-        constexpr uint32_t bg_App{0xff5C2A2A}; // bg color (will use an image instead).
+        constexpr uint32_t bg_App{0xff000000}; // bg color (will use an image instead).
         constexpr uint32_t bg_DarkGrey{0xff333333};
         constexpr uint32_t bg_MidGrey{0xff616161};
         constexpr uint32_t bg_LightGrey{0xff9e9e9e};
@@ -59,6 +59,10 @@ namespace Constants
         constexpr float airStart = 0.001f;
         constexpr float airEnd = 12.0f;
         constexpr float airInterval = 0.5f;
+
+        constexpr float driveStart = 0.0f;
+        constexpr float driveEnd = 15.0f;
+        constexpr float driveInterval = 0.5f;
 
     }
 }

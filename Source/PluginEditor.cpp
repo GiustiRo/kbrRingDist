@@ -14,7 +14,7 @@
 //==============================================================================
 CtagdrcAudioProcessorEditor::CtagdrcAudioProcessorEditor(CtagdrcAudioProcessor& p, AudioProcessorValueTreeState& vts)
     : AudioProcessorEditor(&p), processor(p), valueTreeState(vts), backgroundApp(Colour(Constants::Colors::bg_App)),
-      mixLSlider(this), airLSlider(this)
+      mixLSlider(this), airLSlider(this), driveLSlider(this)
 {
 
     // Make sure that before the constructor has finished, you've set the
@@ -37,7 +37,7 @@ void CtagdrcAudioProcessorEditor::paint(Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll(backgroundApp);
-    //g.drawImage(bg_image, getLocalBounds().toFloat()); // Uncomment to apply bg img loaded above.
+    g.drawImage(bg_image, getLocalBounds().toFloat()); // Uncomment to apply bg img loaded above.
 }
 
 void CtagdrcAudioProcessorEditor::resized()
@@ -145,11 +145,15 @@ void CtagdrcAudioProcessorEditor::initWidgets()
     
     addAndMakeVisible(mixLSlider);
     mixLSlider.reset(valueTreeState, "mix"); // Param A.
-    mixLSlider.setLabelText("Param A");
+    mixLSlider.setLabelText("Fatten");
 
     addAndMakeVisible(airLSlider);
     airLSlider.reset(valueTreeState, "air"); // Param B.
-    airLSlider.setLabelText("Param B");
+    airLSlider.setLabelText("Ring");
+
+    //addAndMakeVisible(driveLSlider);
+    //driveLSlider.reset(valueTreeState, "drive"); // S.
+    //driveLSlider.setLabelText("Drive");
 
     addAndMakeVisible(appTitle);
     appTitle.setText("Kbr RingDist", dontSendNotification);

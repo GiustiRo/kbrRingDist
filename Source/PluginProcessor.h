@@ -61,6 +61,9 @@ public:
     void setStateInformation(const void* data, int sizeInBytes) override;
 
     void parameterChanged(const String& parameterID, float newValue) override;
+    //float scaleRange(const float& input, const float& inputLow, const float& inputHigh, const float& outputLow, const float& outputHigh);
+
+
     AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
 
     //==============================================================================
@@ -77,6 +80,7 @@ private:
     // EQ (single band w. default value 8k Hz)
     //Equalizer equalizer;
     const std::array<float, numBands> defaultFreq{ 8000.0f };
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CtagdrcAudioProcessor)
 };

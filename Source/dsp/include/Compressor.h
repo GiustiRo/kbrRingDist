@@ -43,10 +43,15 @@ public:
 
     void setAir(float); // Param B.
 
+    void setDrive(float); // Param A.
+
     // Return current sampleRate
     double getSampleRate();
 
     float getMaxGainReduction();
+
+    float softClip(const float& input, const float& drive);
+
 
     // Processes input buffer
     void process(AudioBuffer<float>& buffer);
@@ -82,6 +87,7 @@ private:
 
     bool lookaheadEnabled{false};
     float mix{1.0f};
+    float drive{ 1.0f };
     float maxGainReduction{0.0f};
     float band4Freq{ 9500.0f }, band4Gain{ 0.0f }, band4Q{0.4f};
 
@@ -89,4 +95,6 @@ private:
         dsp::IIR::Coefficients<float>>;
     dsp::ProcessorChain<StereoFilter> processChain;
     enum ChainIndex { Band4 };
+    const float piDivisor = 2 / juce::MathConstants<float>::pi;
+
 };

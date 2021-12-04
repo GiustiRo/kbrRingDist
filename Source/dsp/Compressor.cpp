@@ -54,6 +54,11 @@ void Compressor::setAir(float band4G) // Param B.
     band4Gain = band4G;
 }
 
+void Compressor::setDrive(float newDrive) // Param A.
+{
+    drive = newDrive;
+}
+
 double Compressor::getSampleRate()
 {
     return procSpec.sampleRate;
@@ -128,6 +133,20 @@ void Compressor::process(AudioBuffer<float>& buffer)
             float* channelData = buffer.getWritePointer(i); //wet signal
             FloatVectorOperations::multiply(channelData, mix, numSamples);
             FloatVectorOperations::addWithMultiply(channelData, originalSignal.getReadPointer(i), 1 - mix, numSamples);
+
+
+        }
+
+        // Saturation
+        for (int channel = 0; channel < numChannels; ++channel)
+        {
+            auto* outputData = buffer.getWritePointer(channel);
+            auto* inputData = buffer.getReadPointer(channel);
+            auto* rawDrive = &drive;
+
+            for (int sample = 0; sample < buffer.getNumSamples(); sample++) {
+                outputData[sample] = softClip(inputData[sample], *rawDrive) * pow(10, /**rawTrim * */0.05f);
+            }
         }
 
         // Eq
@@ -137,6 +156,17 @@ void Compressor::process(AudioBuffer<float>& buffer)
         processChain.process(context);
 
     }
+}
+
+float Compressor::softClip(const float& input, const float& drive) {
+
+    //1.5f to account for drop in gain from the saturation initial state
+    //pow(10, (-1 * drive) * 0.04f) to account for the increase in gain when the drive goes up
+    
+    //Original signal:
+    //return piDivisor * atan(pow(10, (drive * 4) * 0.05f) * input) * 1.5f * pow(10, (-1 * drive) * 0.04f);
+
+    return piDivisor * atan(pow(10, (drive * 3) * 0.04f) * input) * 2.3f * pow(10, (-1 * drive) * 0.03f);
 }
 
 inline void Compressor::applyInputGain(AudioBuffer<float>& buffer, int numSamples)
