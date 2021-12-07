@@ -40,6 +40,12 @@ void Compressor::prepare(const dsp::ProcessSpec& ps)
     smoothedAutoMakeup.setAlpha(0.03);
     processChain.prepare(procSpec);
 
+    lfoPhase = 0.0f;
+    inverseSampleRate = 1.0f / (float)ps.sampleRate;
+    
+
+
+
 }
 
 
@@ -58,6 +64,17 @@ void Compressor::setDrive(float newDrive) // Param A.
 {
     drive = newDrive;
 }
+
+void Compressor::setDepth(float newDepth) 
+{
+    depth = newDepth;
+}
+
+void Compressor::setCarrFreq(float newFreq)
+{
+    carrierfreq = newFreq;
+}
+
 
 double Compressor::getSampleRate()
 {
@@ -155,6 +172,37 @@ void Compressor::process(AudioBuffer<float>& buffer)
         dsp::ProcessContextReplacing<float> context(block);
         processChain.process(context);
 
+        // RingMod
+        float* currentDepth = &depth;
+        float* currentFrequency = &carrierfreq;
+        float phase;
+        //float* inverseSR = &inverseSampleRate;
+
+        
+        for (int channel = 0; channel < numChannels; ++channel)
+        {
+            float* channelData = buffer.getWritePointer(channel);
+            phase = lfoPhase;
+
+
+            for (int sample = 0; sample < numSamples; ++sample) {
+                const float in = channelData[sample];
+                float carrier = 2.0f * lfo(phase) - 1.0f;
+                //float out = in * (1 - (int)currentDepth + (int)currentDepth * carrier);
+                float out = in * (1 - depth + depth * carrier);
+
+                channelData[sample] = out;
+
+                phase += carrierfreq * inverseSampleRate;
+                if (phase >= 1.0f)
+                    phase -= 1.0f;
+            }
+        }
+        lfoPhase = phase;
+
+        /*for (int channel = 0; channel < numChannels; ++channel)
+            buffer.clear(channel, 0, numSamples);*/
+
     }
 }
 
@@ -178,5 +226,77 @@ inline void Compressor::applyInputGain(AudioBuffer<float>& buffer, int numSample
         buffer.applyGainRamp(0, numSamples, Decibels::decibelsToGain(prevInput), Decibels::decibelsToGain(input));
         prevInput = input;
     }
+}
+
+
+float Compressor::lfo(float phase)
+{
+    float out = 0.0f;
+
+    /*if (phase < 0.25f)
+        out = 0.5f + 2.0f * phase;
+    else if (phase < 0.75f)
+        out = 1.0f - 2.0f * (phase - 0.25f);
+    else
+        out = 2.0f * (phase - 0.75f);*/
+
+    if (phase < 0.48f)
+        out = 1.0f;
+    else if (phase < 0.5f)
+        out = 1.0f - 50.0f * (phase - 0.48f);
+    else if (phase < 0.98f)
+        out = 0.0f;
+    else
+        out = 50.0f * (phase - 0.98f);
+
+    /*switch (waveform) {
+    case waveformSine: {
+        out = 0.5f + 0.5f * sinf(twoPi * phase);
+        break;
+    }
+    case waveformTriangle: {
+        if (phase < 0.25f)
+            out = 0.5f + 2.0f * phase;
+        else if (phase < 0.75f)
+            out = 1.0f - 2.0f * (phase - 0.25f);
+        else
+            out = 2.0f * (phase - 0.75f);
+        break;
+    }
+    case waveformSawtooth: {
+        if (phase < 0.5f)
+            out = 0.5f + phase;
+        else
+            out = phase - 0.5f;
+        break;
+    }
+    case waveformInverseSawtooth: {
+        if (phase < 0.5f)
+            out = 0.5f - phase;
+        else
+            out = 1.5f - phase;
+        break;
+    }*/
+    //case waveformSquare: {
+        /*if (phase < 0.5f)
+            out = 0.0f;
+        else
+            out = 1.0f;*/
+        //break;
+    //}
+    /*case waveformSquareSlopedEdges: {
+        if (phase < 0.48f)
+            out = 1.0f;
+        else if (phase < 0.5f)
+            out = 1.0f - 50.0f * (phase - 0.48f);
+        else if (phase < 0.98f)
+            out = 0.0f;
+        else
+            out = 50.0f * (phase - 0.98f);
+        break;
+    }
+    }*/
+
+    return out;
 }
 

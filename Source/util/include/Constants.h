@@ -56,13 +56,21 @@ namespace Constants
         constexpr float mixEnd = 1.0f;
         constexpr float mixInterval = 0.001f;
 
-        constexpr float airStart = 0.001f;
-        constexpr float airEnd = 12.0f;
-        constexpr float airInterval = 0.5f;
+        constexpr float airStart = 0.0f;
+        constexpr float airEnd = 100.0f;
+        constexpr float airInterval = 1.0f;
 
         constexpr float driveStart = 0.0f;
         constexpr float driveEnd = 15.0f;
         constexpr float driveInterval = 0.5f;
+
+        constexpr float depthStart = 0.0f;
+        constexpr float depthEnd = 1.0f;
+        constexpr float depthInterval = 0.5f;
+
+        constexpr float carrierfreqStart = 10.0f;
+        constexpr float carrierfreqEnd = 1000.0f;
+        constexpr float carrierfreqInterval = 100.0f;
 
     }
 }

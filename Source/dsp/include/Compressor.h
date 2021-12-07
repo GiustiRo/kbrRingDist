@@ -43,7 +43,11 @@ public:
 
     void setAir(float); // Param B.
 
-    void setDrive(float); // Param A.
+    void setDrive(float);
+
+    void setDepth(float);
+    void setCarrFreq(float);
+
 
     // Return current sampleRate
     double getSampleRate();
@@ -90,6 +94,15 @@ private:
     float drive{ 1.0f };
     float maxGainReduction{0.0f};
     float band4Freq{ 9500.0f }, band4Gain{ 0.0f }, band4Q{0.4f};
+
+    float depth{ 0.0f };
+    float carrierfreq{ 10.0f };
+
+    float lfoPhase;
+    float inverseSampleRate;
+    //float twoPi;
+
+    float lfo(float phase);
 
     using StereoFilter = dsp::ProcessorDuplicator<dsp::IIR::Filter<float>,
         dsp::IIR::Coefficients<float>>;

@@ -33,6 +33,9 @@ CtagdrcAudioProcessor::CtagdrcAudioProcessor()
     parameters.addParameterListener("drive", this);
     //parameters.addParameterListener("trim", this);
     parameters.addParameterListener("model", this);
+    parameters.addParameterListener("depth", this);
+    parameters.addParameterListener("carrierfreq", this);
+    //parameters.addParameterListener("carrierwave", this);
 
 
     gainReduction.set(0.0f);
@@ -237,23 +240,13 @@ void CtagdrcAudioProcessor::parameterChanged(const String& parameterID, float ne
         compressor.setMix(newValue);
         compressor.setDrive(newValue * 10);
     }
-    // Apply modifications...
-    // 
-    /*else if (parameterID == "mix") {
-        compressor.setMix(newValue);
-    }*/
-    //else if (parameterID == "air") {
-    //    compressor.setAir(newValue);
-    //}
+    else if (parameterID == "air") {
+        compressor.setDepth(newValue * 0.1f); /*0 - 1*/
+        compressor.setCarrFreq(newValue * 2); /*10 - 100.000 */
+
+    }
 }
 
-//float CtagdrcAudioProcessor::softClip(const float& input, const float& drive) {
-//
-//    //1.5f to account for drop in gain from the saturation initial state
-//    //pow(10, (-1 * drive) * 0.04f) to account for the increase in gain when the drive goes up
-//
-//    return piDivisor * atan(pow(10, (drive * 4) * 0.05f) * input) * 1.5f * pow(10, (-1 * drive) * 0.04f);
-//}
 
 AudioProcessorValueTreeState::ParameterLayout CtagdrcAudioProcessor::createParameterLayout()
 {
@@ -293,7 +286,7 @@ AudioProcessorValueTreeState::ParameterLayout CtagdrcAudioProcessor::createParam
                                                             0.0f, "%", AudioProcessorParameter::genericParameter,
                                                             [](float value, float)
                                                             {
-                                                                return String(value, 1) + " dB";
+                                                                return String(round(value), 0) + " %";
                                                             })); // Param B.
 
     params.push_back(std::make_unique<AudioParameterFloat>("drive", "Drive",
@@ -302,6 +295,28 @@ AudioProcessorValueTreeState::ParameterLayout CtagdrcAudioProcessor::createParam
                                                                 Constants::Parameter::driveEnd,
                                                                 Constants::Parameter::driveInterval),
                                                             0.0f, "%", AudioProcessorParameter::genericParameter,
+                                                            [](float value, float)
+                                                            {
+                                                                return String(value, 1) + " dB";
+                                                            }));
+
+    params.push_back(std::make_unique<AudioParameterFloat>("depth", "Depth",
+                                                            NormalisableRange<float>(
+                                                                Constants::Parameter::depthStart,
+                                                                Constants::Parameter::depthEnd,
+                                                                Constants::Parameter::depthInterval),
+                                                            0.0f, "%", AudioProcessorParameter::genericParameter,
+                                                            [](float value, float)
+                                                            {
+                                                                return String(value, 1) + " dB";
+                                                            }));
+
+    params.push_back(std::make_unique<AudioParameterFloat>("carrierfreq", "CarrierFreq",
+                                                            NormalisableRange<float>(
+                                                                Constants::Parameter::carrierfreqStart,
+                                                                Constants::Parameter::carrierfreqEnd,
+                                                                Constants::Parameter::carrierfreqInterval),
+                                                            10.0f, "%", AudioProcessorParameter::genericParameter,
                                                             [](float value, float)
                                                             {
                                                                 return String(value, 1) + " dB";
